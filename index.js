@@ -1,12 +1,21 @@
 import fs from 'node:fs';
 import https from 'node:https';
+import path from 'node:path';
 import fetch from 'node-fetch';
 import { parse } from 'node-html-parser';
 
-// Creats memes-directory if it doesn't exist already
+// Creats memes-directory if it already exists -> clears the directory
 try {
   if (!fs.existsSync('./memes')) {
     fs.mkdirSync('./memes');
+  } else {
+    try {
+      fs.readdirSync('./memes').forEach((file) => {
+        fs.rmSync(path.join('./memes', file));
+      });
+    } catch (error) {
+      console.log(error);
+    }
   }
 } catch (err) {
   console.log(`Following error occured: ${err}`);
