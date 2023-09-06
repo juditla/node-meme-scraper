@@ -36,7 +36,7 @@ const imgTags = root.getElementsByTagName('img');
 const imgArr = [];
 for (let i = 0; i < 10; i++) {
   // fills array with url after triming and slicing away unnecessary parts
-  imgArr[i] = imgTags[i].rawAttrs.trim().slice(5, -11);
+  imgArr[i] = imgTags[i].rawAttrs.trim().slice(5, -1);
 
   // create zero-based filenumber
   let filenumber;
