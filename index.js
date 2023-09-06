@@ -1,6 +1,5 @@
 import fs from 'node:fs';
-import https from 'node:https';
-import path from 'node:path';
+// import { argv } from 'node:process';
 import fetch from 'node-fetch';
 import { parse } from 'node-html-parser';
 
@@ -8,14 +7,6 @@ import { parse } from 'node-html-parser';
 try {
   if (!fs.existsSync('./memes')) {
     fs.mkdirSync('./memes');
-  } else {
-    try {
-      fs.readdirSync('./memes').forEach((file) => {
-        fs.rmSync(path.join('./memes', file));
-      });
-    } catch (error) {
-      console.log(error);
-    }
   }
 } catch (err) {
   console.log(`Following error occured: ${err}`);
@@ -36,19 +27,43 @@ const imgTags = root.getElementsByTagName('img');
 const imgArr = [];
 for (let i = 0; i < 10; i++) {
   // fills array with url after triming and slicing away unnecessary parts
-  imgArr[i] = imgTags[i].rawAttrs.trim().slice(5, -1);
+  imgArr[i] = imgTags[i].getAttribute('src'); // -1 incl. .jpg?width=300 // -11 just .jpg
 
   // create zero-based filenumber
-  let filenumber;
+  let fileNumber;
   if (i === 9) {
-    filenumber = i + 1;
+    fileNumber = i + 1;
   } else {
-    filenumber = '0' + (i + 1);
+    fileNumber = '0' + (i + 1);
   }
-  // download img
-  const file = fs.createWriteStream(`./memes/${filenumber}.jpg`);
-  https
-    .get(imgArr[i], function (res) {
+
+  //   download img
+  const file = fs.createWriteStream(`./memes/${fileNumber}.jpg`);
+  try {
+    const image = await fetch(imgArr[i]);
+    image.body.pipe(file);
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+/* stretch TODO
+
+if (argv[2]) {
+  const path = `https://api.memegen.link/images/${argv[4]}/${argv[2]}/${argv[3]}.jpg`;
+  downloadImage(path, 'custom-meme')
+
+} else {
+  hier text von oben einfügen wo array befüllt wird
+  downloadImage(imgArr[i], filenumber)
+
+}
+
+
+function downdloadImage(url, filename) {
+const file = fs.createWriteStream(`./memes/${filename}.jpg`);
+https
+    .get(url, function (res) {
       res.pipe(file);
       file.on('finish', () => {
         file.close();
@@ -58,3 +73,5 @@ for (let i = 0; i < 10; i++) {
       console.error(err);
     });
 }
+
+*/
