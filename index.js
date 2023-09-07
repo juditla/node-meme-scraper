@@ -15,8 +15,9 @@ try {
 // download custom meme if input is given
 if (argv[2]) {
   const path = `https://api.memegen.link/images/${argv[4]}/${argv[2]}/${argv[3]}.jpg`;
-  downloadImage(path, 'custom-meme');
-  console.log(`Your custom meme downloaded.`);
+  downloadImage(path, 'custom-meme')
+    .then(console.log(`Download of your custom meme finished.`))
+    .catch((error) => console.log(error));
 } else {
   // download 10 firsrt memes
 
@@ -44,8 +45,9 @@ if (argv[2]) {
     } else {
       fileNumber = '0' + (i + 1);
     }
-    downloadImage(imgArr[i], fileNumber);
-    console.log(`Meme ${fileNumber}/10 downloaded`);
+    downloadImage(imgArr[i], fileNumber)
+      .then(console.log(`Meme ${fileNumber}/10 downloaded`))
+      .catch((error) => console.log(error));
   }
 }
 
